@@ -43,7 +43,11 @@
                     <!-- Order Form -->
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <h2 class="font-semibold text-lg mb-4">Uw Gegevens</h2>
-                        <form action="{{ route('order.store') }}" method="POST" id="orderForm">
+                        <form action="{{ route('order.store') }}" method="POST" id="orderForm"
+                              @submit="Object.entries(cart).forEach(([id, item], i) => {
+                                  let el = document.getElementById('cartInputs');
+                                  el.innerHTML += '<input type=\'hidden\' name=\'items[\'+i+\'][id]\' value=\''+item.id+'\'><input type=\'hidden\' name=\'items[\'+i+\'][quantity]\' value=\''+item.quantity+'\'>';
+                              })">
                             @csrf
                             <input type="hidden" name="type" :value="orderType">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -98,7 +102,7 @@
                             </template>
 
                             <template x-if="Object.keys(cart).length > 0">
-                                <button type="submit" onclick="populateCartInputs()"
+                                <button type="submit"
                                         class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-colors text-lg flex items-center justify-center space-x-2">
                                     <span>✓</span><span>Bestelling Plaatsen · <span x-text="formatEuro(total)"></span></span>
                                 </button>
@@ -164,33 +168,4 @@
         </div>
     </section>
 
-    <script>
-        function populateCartInputs() {
-            const cart = JSON.parse('{{ json_encode(session()->get("cart", [])) }}');
-            const container = document.getElementById('cartInputs');
-            container.innerHTML = '';
-            Object.entries(cart).forEach(([id, item], index) => {
-                container.innerHTML += `
-                    <input type="hidden" name="items[${index}][id]" value="${item.id}">
-                    <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}">
-                `;
-            });
-        }
-
-        // Also update from Alpine's cart state
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            const alpineEl = document.querySelector('[x-data]');
-            if (alpineEl && alpineEl._x_dataStack) {
-                const data = Alpine.$data(alpineEl);
-                const container = document.getElementById('cartInputs');
-                container.innerHTML = '';
-                Object.entries(data.cart).forEach(([id, item], index) => {
-                    container.innerHTML += `
-                        <input type="hidden" name="items[${index}][id]" value="${item.id}">
-                        <input type="hidden" name="items[${index}][quantity]" value="${item.quantity}">
-                    `;
-                });
-            }
-        });
-    </script>
 </x-app-layout>
