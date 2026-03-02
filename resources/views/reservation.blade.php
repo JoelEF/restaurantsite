@@ -4,7 +4,7 @@
     <div class="hero-gradient text-white py-16">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="font-display text-5xl font-bold mb-4">Tafel Reserveren</h1>
-            <p class="text-gray-300 text-lg">Reserveer een tafel en geniet van een onvergetelijk diner bij Istanbul Döner.</p>
+            <p class="text-gray-300 text-lg">Reserveer een tafel en geniet van een onvergetelijk diner bij Pizzeria Grill Luna.</p>
         </div>
     </div>
 

@@ -35,7 +35,7 @@
                                 <span class="text-2xl mt-0.5">✉️</span>
                                 <div>
                                     <p class="font-medium text-gray-900">E-mail</p>
-                                    <a href="mailto:info@istanbuldoner.nl" class="text-orange-500 hover:underline text-sm">info@istanbuldoner.nl</a>
+                                    <a href="mailto:info@pizzeriagrilluna.nl" class="text-orange-500 hover:underline text-sm">info@pizzeriagrilluna.nl</a>
                                 </div>
                             </li>
                         </ul>

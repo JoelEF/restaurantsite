@@ -148,10 +148,10 @@
                 </div>
                 <div>
                     <span class="text-brand-500 font-semibold text-sm uppercase tracking-wider">Ons verhaal</span>
-                    <h2 class="font-display text-4xl font-bold text-gray-900 mt-2 mb-6">Authenticiteit uit het Hart van Istanbul</h2>
+                    <h2 class="font-display text-4xl font-bold text-gray-900 mt-2 mb-6">Authentieke Smaak bij Pizzeria Grill Luna</h2>
                     <p class="text-gray-600 leading-relaxed mb-4">
-                        In 2005 opende onze familie Istanbul Döner met één doel: authentiek Turks eten brengen naar Amsterdam.
-                        Met geheime recepten van onze grootmoeder en de beste ingrediënten uit Turkije, bereiden we elke dag vers ons vlees van de spit.
+                        In 2005 opende onze familie Pizzeria Grill Luna met één doel: authentieke pizza en grillgerechten brengen naar Amsterdam.
+                        Met geheime recepten van onze grootmoeder en de beste ingrediënten, bereiden we elke dag vers onze gerechten met liefde.
                     </p>
                     <p class="text-gray-600 leading-relaxed mb-8">
                         Ons vlees is 100% halal gecertificeerd en wordt dagelijks vers gemarineerd. Van de knapperige pita tot de sappige dürüm — alles wordt met liefde en vakmanschap bereid.
@@ -160,7 +160,7 @@
                         <div class="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl">
                             <span class="text-2xl">🏆</span>
                             <div>
-                                <div class="font-semibold text-sm">Beste Döner 2024</div>
+                                <div class="font-semibold text-sm">Beste Pizzeria 2024</div>
                                 <div class="text-xs text-gray-500">Amsterdam Food Awards</div>
                             </div>
                         </div>

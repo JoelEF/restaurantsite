@@ -1,11 +1,11 @@
-@props(['title' => 'Istanbul Döner', 'metaDescription' => null])
+@props(['title' => 'Pizzeria Grill Luna', 'metaDescription' => null])
 <!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ $metaDescription ?? 'Istanbul Döner - Authentiek Turks eten in Amsterdam. Verse döner kebab, wraps, pita en meer.' }}">
-    <title>{{ $title }} | Istanbul Döner</title>
+    <meta name="description" content="{{ $metaDescription ?? 'Pizzeria Grill Luna - Authentieke pizza en grillgerechten in Amsterdam. Vers bereid met de beste ingrediënten.' }}">
+    <title>{{ $title }} | Pizzeria Grill Luna</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -43,11 +43,11 @@
             <div class="flex items-center justify-between h-16">
                 <a href="{{ route('home') }}" class="flex items-center space-x-2 group">
                     <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center group-hover:bg-orange-400 transition-colors">
-                        <span class="text-xl">🥙</span>
+                        <span class="text-xl">🍕</span>
                     </div>
                     <div>
-                        <span class="font-display text-xl font-bold text-orange-400">Istanbul</span>
-                        <span class="font-display text-xl font-bold text-white ml-1">Döner</span>
+                        <span class="font-display text-xl font-bold text-orange-400">Pizzeria Grill</span>
+                        <span class="font-display text-xl font-bold text-white ml-1">Luna</span>
                     </div>
                 </a>
                 <div class="hidden md:flex items-center space-x-8">
@@ -96,10 +96,10 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center"><span class="text-xl">🥙</span></div>
-                        <div><span class="font-display text-xl font-bold text-orange-400">Istanbul</span><span class="font-display text-xl font-bold text-white ml-1">Döner</span></div>
+                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center"><span class="text-xl">🍕</span></div>
+                        <div><span class="font-display text-xl font-bold text-orange-400">Pizzeria Grill</span><span class="font-display text-xl font-bold text-white ml-1">Luna</span></div>
                     </div>
-                    <p class="text-sm leading-relaxed">Authentiek Turks eten, bereid met de beste ingrediënten en eeuwenoude recepten.</p>
+                    <p class="text-sm leading-relaxed">Authentieke pizza en grillgerechten, bereid met de beste ingrediënten en vol smaak.</p>
                 </div>
                 <div>
                     <h4 class="text-white font-semibold mb-4">Snelle Links</h4>
@@ -115,7 +115,7 @@
                     <ul class="space-y-2 text-sm">
                         <li class="flex items-center space-x-2"><span>📍</span><span>Grote Markt 42, Amsterdam</span></li>
                         <li class="flex items-center space-x-2"><span>📞</span><a href="tel:+31201234567" class="hover:text-orange-400">+31 20 123 4567</a></li>
-                        <li class="flex items-center space-x-2"><span>✉️</span><a href="mailto:info@istanbuldoner.nl" class="hover:text-orange-400">info@istanbuldoner.nl</a></li>
+                        <li class="flex items-center space-x-2"><span>✉️</span><a href="mailto:info@pizzeriagrilluna.nl" class="hover:text-orange-400">info@pizzeriagrilluna.nl</a></li>
                     </ul>
                 </div>
                 <div>
@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between">
-                <p class="text-sm">© {{ date('Y') }} Istanbul Döner. Alle rechten voorbehouden.</p>
+                <p class="text-sm">© {{ date('Y') }} Pizzeria Grill Luna. Alle rechten voorbehouden.</p>
                 <div class="flex space-x-4 mt-4 md:mt-0 text-sm">
                     <a href="#" class="hover:text-orange-400 transition-colors">Facebook</a>
                     <a href="#" class="hover:text-orange-400 transition-colors">Instagram</a>
