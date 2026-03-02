@@ -67,11 +67,11 @@ class MenuItemResource extends Resource
                     ])->columns(4),
                 Forms\Components\Section::make('Afbeelding')
                     ->schema([
-                        Forms\Components\SpatieMediaLibraryFileUpload::make('image')
-                            ->collection('image')
+                        Forms\Components\FileUpload::make('image')
                             ->label('Productafbeelding')
                             ->image()
-                            ->imageEditor(),
+                            ->disk('public')
+                            ->directory('menu-items'),
                     ]),
             ]);
     }
@@ -80,8 +80,8 @@ class MenuItemResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('image')
-                    ->collection('image')
+                Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
                     ->label(''),
                 Tables\Columns\TextColumn::make('category.name')
                     ->sortable()
