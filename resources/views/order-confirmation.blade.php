@@ -1,6 +1,53 @@
 <x-app-layout>
     <x-slot name="title">Bestelling Bevestigd</x-slot>
 
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #keukenbon, #keukenbon * { visibility: visible; }
+            #keukenbon {
+                position: fixed;
+                top: 0; left: 0;
+                width: 80mm;
+                font-family: monospace;
+                font-size: 12pt;
+                color: #000;
+            }
+        }
+    </style>
+
+    <!-- Keukenbon (alleen zichtbaar bij printen) -->
+    <div id="keukenbon" style="display:none;">
+        <div style="text-align:center; border-bottom:2px dashed #000; padding-bottom:8px; margin-bottom:8px;">
+            <strong style="font-size:16pt;">KEUKENBON</strong><br>
+            <span style="font-size:10pt;">{{ now()->format('d-m-Y H:i') }}</span>
+        </div>
+        <div style="margin-bottom:8px;">
+            <strong>#{{ $order->order_number }}</strong><br>
+            Naam: {{ $order->customer_name }}<br>
+            Tel: {{ $order->customer_phone }}<br>
+            Type: {{ $order->type === 'delivery' ? 'BEZORGING' : 'AFHALEN' }}
+            @if($order->type === 'delivery')
+            <br>Adres: {{ $order->delivery_address }}
+            @endif
+        </div>
+        <div style="border-top:1px dashed #000; padding-top:8px; margin-bottom:8px;">
+            @foreach($order->items as $item)
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span><strong>{{ $item->quantity }}x</strong> {{ $item->name }}</span>
+            </div>
+            @endforeach
+        </div>
+        @if($order->notes)
+        <div style="border-top:1px dashed #000; padding-top:8px; margin-bottom:8px; font-size:10pt;">
+            <strong>Opmerking:</strong><br>{{ $order->notes }}
+        </div>
+        @endif
+        <div style="border-top:2px dashed #000; padding-top:8px; text-align:center; font-size:10pt;">
+            {{ $order->type === 'delivery' ? '🚚 Bezorging 30-45 min' : '🏃 Afhalen 15-20 min' }}
+        </div>
+    </div>
+
     <section class="py-20">
         <div class="max-w-2xl mx-auto px-4 text-center">
             <div class="bg-white rounded-3xl shadow-xl border border-gray-100 p-12">
@@ -56,4 +103,10 @@
             </div>
         </div>
     </section>
+
+    <script>
+        window.addEventListener('load', function () {
+            window.print();
+        });
+    </script>
 </x-app-layout>
