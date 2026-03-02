@@ -1,6 +1,6 @@
 <div x-data="{ open: @entangle('isOpen').live }">
     <!-- Cart Toggle Button -->
-    <button wire:click="toggleCart"
+    <button @click="open = !open"
             class="relative bg-orange-500 hover:bg-orange-400 text-white p-2 rounded-full transition-colors">
         🛒
         @if($this->totalItems() > 0)
@@ -23,7 +23,7 @@
         <!-- Header -->
         <div class="bg-gray-900 text-white p-4 flex items-center justify-between">
             <h2 class="font-semibold text-lg">🛒 Mijn Bestelling</h2>
-            <button wire:click="toggleCart" class="text-gray-400 hover:text-white">✕</button>
+            <button @click="open = false" class="text-gray-400 hover:text-white">✕</button>
         </div>
 
         <!-- Items -->
@@ -32,7 +32,7 @@
             <div class="text-center py-12">
                 <span class="text-5xl">🛒</span>
                 <p class="text-gray-500 mt-3">Je winkelwagen is leeg</p>
-                <button wire:click="toggleCart" class="mt-4 text-orange-500 hover:underline text-sm">Bekijk het menu</button>
+                <button @click="open = false" class="mt-4 text-orange-500 hover:underline text-sm">Bekijk het menu</button>
             </div>
             @else
             @foreach($cart as $id => $item)
@@ -78,9 +78,10 @@
     </div>
 
     <!-- Overlay -->
-    <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+    <div x-show="open"
+         x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-         @click="$wire.toggleCart()"
+         @click="open = false"
          class="fixed inset-0 bg-black/50 z-40"></div>
 </div>
