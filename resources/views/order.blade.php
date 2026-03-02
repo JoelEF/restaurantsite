@@ -43,11 +43,7 @@
                     <!-- Order Form -->
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <h2 class="font-semibold text-lg mb-4">Uw Gegevens</h2>
-                        <form action="{{ route('order.store') }}" method="POST" id="orderForm"
-                              @submit="Object.entries(cart).forEach(([id, item], i) => {
-                                  let el = document.getElementById('cartInputs');
-                                  el.innerHTML += '<input type=\'hidden\' name=\'items[\'+i+\'][id]\' value=\''+item.id+'\'><input type=\'hidden\' name=\'items[\'+i+\'][quantity]\' value=\''+item.quantity+'\'>';
-                              })">
+                        <form action="{{ route('order.store') }}" method="POST" id="orderForm">
                             @csrf
                             <input type="hidden" name="type" :value="orderType">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -86,8 +82,11 @@
                                           placeholder="Extra saus, allergie informatie, etc.">{{ old('notes') }}</textarea>
                             </div>
 
-                            <!-- Hidden cart items - populated by JS -->
-                            <div id="cartInputs"></div>
+                            <!-- Cart items vanuit sessie -->
+                            @foreach(session()->get('cart', []) as $item)
+                                <input type="hidden" name="items[{{ $loop->index }}][id]" value="{{ $item['id'] }}">
+                                <input type="hidden" name="items[{{ $loop->index }}][quantity]" value="{{ $item['quantity'] }}">
+                            @endforeach
 
                             @if($errors->has('items'))
                             <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
