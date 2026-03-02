@@ -47,8 +47,8 @@
     @else
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @foreach($items as $item)
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group" style="transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 40px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-            <div class="h-44 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-6xl relative">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col" style="transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 40px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div class="h-36 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-5xl relative flex-shrink-0">
                 {{ $item->category->icon ?? '🍽️' }}
                 <div class="absolute top-2 left-2 flex flex-col gap-1">
                     @if($item->is_popular) <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">⭐ Populair</span> @endif
@@ -56,14 +56,12 @@
                     @if($item->is_vegetarian) <span class="bg-green-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">🌿 Veg</span> @endif
                 </div>
             </div>
-            <div class="p-4">
-                <div class="flex items-start justify-between gap-2 mb-2">
+            <div class="p-4 flex flex-col flex-1">
+                <div class="flex items-start justify-between gap-2 mb-1">
                     <h3 class="font-semibold text-gray-900 text-sm leading-tight">{{ $item->name }}</h3>
                     <span class="text-orange-500 font-bold text-sm whitespace-nowrap">€{{ number_format($item->price, 2, ',', '.') }}</span>
                 </div>
-                @if($item->description)
-                <p class="text-gray-500 text-xs mb-3 line-clamp-2">{{ $item->description }}</p>
-                @endif
+                <p class="text-gray-500 text-xs line-clamp-2 flex-1 mb-3">{{ $item->description }}</p>
                 <button wire:click="$dispatchTo('shopping-cart', 'add-item', { menuItemId: {{ $item->id }} })"
                         class="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 rounded-xl transition-colors flex items-center justify-center space-x-1">
                     <span>+</span><span>Toevoegen</span>
