@@ -65,6 +65,8 @@ class OrderController extends Controller
             $order->items()->create($item);
         }
 
+        session()->forget('cart');
+
         return redirect()->route('order.confirmation', $order)->with('success', 'Bestelling geplaatst!');
     }
 
