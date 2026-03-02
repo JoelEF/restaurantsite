@@ -22,3 +22,6 @@ Route::post('/reservering', [ReservationController::class, 'store'])->name('rese
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
+
+Route::get('/keuken', [OrderController::class, 'kitchen'])->name('kitchen');
+Route::get('/keuken/bestellingen', [OrderController::class, 'kitchenOrders'])->name('kitchen.orders');

@@ -74,6 +74,35 @@ class OrderController extends Controller
         return view('order-confirmation', compact('order'));
     }
 
+    public function kitchen()
+    {
+        return view('kitchen');
+    }
+
+    public function kitchenOrders()
+    {
+        $orders = Order::with('items')
+            ->where('created_at', '>=', now()->subHours(12))
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn($order) => [
+                'id'           => $order->id,
+                'order_number' => $order->order_number,
+                'created_at'   => $order->created_at->format('H:i'),
+                'type'         => $order->type,
+                'customer_name'  => $order->customer_name,
+                'customer_phone' => $order->customer_phone,
+                'delivery_address' => $order->delivery_address,
+                'notes'        => $order->notes,
+                'items'        => $order->items->map(fn($i) => [
+                    'name'     => $i->name,
+                    'quantity' => $i->quantity,
+                ]),
+            ]);
+
+        return response()->json($orders);
+    }
+
     public function track(Request $request)
     {
         $order = null;
