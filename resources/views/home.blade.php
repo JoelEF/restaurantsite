@@ -12,12 +12,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
                     <div class="inline-flex items-center bg-brand-500/20 border border-brand-500/30 rounded-full px-4 py-2 mb-6">
-                        <span class="text-brand-400 text-sm font-medium">🌟 Authentiek Turks eten sinds 2005</span>
+                        <span class="text-brand-400 text-sm font-medium">🌟 Pizza & Grill in Otterlo</span>
                     </div>
                     <h1 class="font-display text-5xl lg:text-7xl font-bold leading-tight mb-6">
                         De Beste
                         <span class="text-brand-400 block">Döner Kebab</span>
-                        in Amsterdam
+                        in Otterlo
                     </h1>
                     <p class="text-gray-300 text-lg mb-8 leading-relaxed">
                         Verse ingrediënten, authentieke recepten en de warmte van Turkse gastvrijheid.
@@ -44,8 +44,8 @@
                             <div class="text-sm text-gray-400">Gerechten op het menu</div>
                         </div>
                         <div class="text-center">
-                            <div class="font-display text-3xl font-bold text-brand-400">4.8★</div>
-                            <div class="text-sm text-gray-400">Gemiddelde beoordeling</div>
+                            <div class="font-display text-3xl font-bold text-brand-400">4★</div>
+                            <div class="text-sm text-gray-400">299 beoordelingen</div>
                         </div>
                     </div>
                 </div>
@@ -182,23 +182,30 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="font-display text-4xl font-bold text-gray-900 mb-4">Wat Onze Klanten Zeggen</h2>
+                <p class="text-gray-500">4 sterren uit 299 beoordelingen op Thuisbezorgd.nl</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 @foreach([
-                    ['name' => 'Fatima A.', 'review' => 'De beste döner die ik ooit heb gegeten! Het vlees is super sappig en de sauzen zijn hemels. Ik kom hier elke week!', 'rating' => 5],
-                    ['name' => 'Mike van der Berg', 'review' => 'Besteld via de website, binnen 25 minuten bezorgd. Nog warm ook! De kip dürüm is absoluut aanrader.', 'rating' => 5],
-                    ['name' => 'Yasmine K.', 'review' => 'Als vegetariër ben ik blij met de falafel opties. Heerlijk vers en de hummus is zelfgemaakt. Top zaak!', 'rating' => 5],
+                    ['name' => 'Verheijen', 'review' => 'Te veel van al het goede. Alles goed op smaak, warm en keurig op tijd bezorgd. Aanrader!', 'rating' => 5, 'date' => '18 jul 2025'],
+                    ['name' => 'Marja', 'review' => 'Lekkere pizza\'s. Keurig op tijd klaar. Vriendelijk personeel.', 'rating' => 5, 'date' => '14 jul 2025'],
+                    ['name' => 'M', 'review' => 'Heerlijk eten en snel bezorgd met als extraatje een heerlijk toetje (compensatie voor Magnum!)', 'rating' => 5, 'date' => '2 jan 2026'],
                 ] as $review)
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
-                    <div class="flex items-center space-x-1 mb-3">
-                        @for($i = 0; $i < $review['rating']; $i++) <span class="text-yellow-400">★</span> @endfor
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-1">
+                            @for($i = 0; $i < $review['rating']; $i++) <span class="text-yellow-400">★</span> @endfor
+                        </div>
+                        <span class="text-xs text-gray-400">{{ $review['date'] }}</span>
                     </div>
                     <p class="text-gray-600 italic mb-4">"{{ $review['review'] }}"</p>
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center text-brand-600 font-bold">
-                            {{ substr($review['name'], 0, 1) }}
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center text-brand-600 font-bold">
+                                {{ substr($review['name'], 0, 1) }}
+                            </div>
+                            <span class="font-semibold text-gray-900">{{ $review['name'] }}</span>
                         </div>
-                        <span class="font-semibold text-gray-900">{{ $review['name'] }}</span>
+                        <span class="text-xs text-gray-400">via Thuisbezorgd.nl</span>
                     </div>
                 </div>
                 @endforeach
@@ -210,7 +217,7 @@
     <section class="hero-gradient text-white py-20">
         <div class="max-w-4xl mx-auto px-4 text-center">
             <h2 class="font-display text-4xl font-bold mb-4">Klaar om te Bestellen?</h2>
-            <p class="text-gray-300 text-lg mb-8">Bestel online en geniet binnen 30 minuten van de lekkerste döner in Amsterdam. Of reserveer een tafel voor een gezellig diner.</p>
+            <p class="text-gray-300 text-lg mb-8">Bestel online en geniet van de lekkerste pizza en grill in Otterlo. Of reserveer een tafel voor een gezellig diner.</p>
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="{{ route('order.index') }}" class="bg-brand-500 hover:bg-brand-400 text-white font-semibold px-10 py-4 rounded-full transition-all duration-300 transform hover:scale-105">
                     🛒 Nu Bestellen

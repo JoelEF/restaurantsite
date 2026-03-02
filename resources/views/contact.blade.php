@@ -21,7 +21,7 @@
                                 <span class="text-2xl mt-0.5">📍</span>
                                 <div>
                                     <p class="font-medium text-gray-900">Adres</p>
-                                    <p class="text-gray-500 text-sm">Grote Markt 42<br>1012 AB Amsterdam</p>
+                                    <p class="text-gray-500 text-sm">Dorpsstraat 6/6b<br>6731 AT Otterlo</p>
                                 </div>
                             </li>
                             <li class="flex items-start space-x-3">
@@ -44,7 +44,7 @@
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <h3 class="font-semibold text-lg mb-4">Openingstijden</h3>
                         <ul class="space-y-2 text-sm">
-                            @foreach(['Ma – Do' => '11:00 – 22:00', 'Vrijdag' => '11:00 – 23:00', 'Zaterdag' => '12:00 – 23:00', 'Zondag' => '12:00 – 22:00'] as $day => $hours)
+                            @foreach(['Maandag' => 'Gesloten', 'Dinsdag' => '16:00 – 20:30', 'Woensdag' => '16:00 – 20:30', 'Donderdag' => '16:00 – 20:30', 'Vrijdag' => '16:00 – 20:30', 'Zaterdag' => '16:00 – 20:30', 'Zondag' => '16:00 – 20:30'] as $day => $hours)
                             <li class="flex justify-between">
                                 <span class="text-gray-500">{{ $day }}</span>
                                 <span class="font-medium text-gray-900">{{ $hours }}</span>
@@ -57,7 +57,7 @@
                     <div class="bg-gray-100 rounded-2xl h-48 flex items-center justify-center text-gray-400 text-center p-4">
                         <div>
                             <span class="text-4xl block mb-2">🗺️</span>
-                            <p class="text-sm">Grote Markt 42, Amsterdam<br><span class="text-xs">Kaart integratie beschikbaar</span></p>
+                            <p class="text-sm">Dorpsstraat 6/6b, Otterlo<br><span class="text-xs">6731 AT Otterlo</span></p>
                         </div>
                     </div>
                 </div>

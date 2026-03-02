@@ -150,7 +150,7 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4">Contact</h4>
                     <ul class="space-y-2 text-sm">
-                        <li class="flex items-center space-x-2"><span>📍</span><span>Grote Markt 42, Amsterdam</span></li>
+                        <li class="flex items-center space-x-2"><span>📍</span><span>Dorpsstraat 6/6b, 6731 AT Otterlo</span></li>
                         <li class="flex items-center space-x-2"><span>📞</span><a href="tel:+31201234567" class="hover:text-brand-400">+31 20 123 4567</a></li>
                         <li class="flex items-center space-x-2"><span>✉️</span><a href="mailto:info@pizzeriagrilluna.nl" class="hover:text-brand-400">info@pizzeriagrilluna.nl</a></li>
                     </ul>
@@ -160,10 +160,8 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4">Openingstijden</h4>
                     <ul class="space-y-1 text-sm">
-                        <li class="flex justify-between"><span>Ma – Do</span><span class="text-white">11:00 – 22:00</span></li>
-                        <li class="flex justify-between"><span>Vrijdag</span><span class="text-white">11:00 – 23:00</span></li>
-                        <li class="flex justify-between"><span>Zaterdag</span><span class="text-white">12:00 – 23:00</span></li>
-                        <li class="flex justify-between"><span>Zondag</span><span class="text-white">12:00 – 22:00</span></li>
+                        <li class="flex justify-between"><span>Maandag</span><span class="text-red-400">Gesloten</span></li>
+                        <li class="flex justify-between"><span>Di – Zo</span><span class="text-white">16:00 – 20:30</span></li>
                     </ul>
                 </div>
             </div>
