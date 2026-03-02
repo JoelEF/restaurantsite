@@ -1,0 +1,85 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\MenuItem;
+use Illuminate\Http\Request;
+
+class OrderController extends Controller
+{
+    public function index()
+    {
+        return view('order');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_email' => 'required|email|max:255',
+            'customer_phone' => 'required|string|max:20',
+            'type' => 'required|in:delivery,pickup',
+            'delivery_address' => 'required_if:type,delivery|nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.id' => 'required|exists:menu_items,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $subtotal = 0;
+        $orderItems = [];
+
+        foreach ($validated['items'] as $item) {
+            $menuItem = MenuItem::findOrFail($item['id']);
+            $itemSubtotal = $menuItem->price * $item['quantity'];
+            $subtotal += $itemSubtotal;
+            $orderItems[] = [
+                'menu_item_id' => $menuItem->id,
+                'name' => $menuItem->name,
+                'price' => $menuItem->price,
+                'quantity' => $item['quantity'],
+                'subtotal' => $itemSubtotal,
+                'notes' => $item['notes'] ?? null,
+            ];
+        }
+
+        $deliveryFee = $validated['type'] === 'delivery' ? 2.50 : 0;
+        $total = $subtotal + $deliveryFee;
+
+        $order = Order::create([
+            'order_number' => Order::generateOrderNumber(),
+            'customer_name' => $validated['customer_name'],
+            'customer_email' => $validated['customer_email'],
+            'customer_phone' => $validated['customer_phone'],
+            'type' => $validated['type'],
+            'delivery_address' => $validated['delivery_address'] ?? null,
+            'subtotal' => $subtotal,
+            'delivery_fee' => $deliveryFee,
+            'total' => $total,
+            'notes' => $validated['notes'] ?? null,
+        ]);
+
+        foreach ($orderItems as $item) {
+            $order->items()->create($item);
+        }
+
+        return redirect()->route('order.confirmation', $order)->with('success', 'Bestelling geplaatst!');
+    }
+
+    public function confirmation(Order $order)
+    {
+        $order->load('items');
+        return view('order-confirmation', compact('order'));
+    }
+
+    public function track(Request $request)
+    {
+        $order = null;
+        if ($request->has('order_number')) {
+            $order = Order::where('order_number', $request->order_number)->first();
+        }
+        return view('order-track', compact('order'));
+    }
+}
