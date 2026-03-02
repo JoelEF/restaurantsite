@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PrijzenController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReservationController;
@@ -25,3 +26,6 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 
 Route::get('/keuken', [OrderController::class, 'kitchen'])->name('kitchen');
 Route::get('/keuken/bestellingen', [OrderController::class, 'kitchenOrders'])->name('kitchen.orders');
+
+Route::get('/admin/prijzen', [PrijzenController::class, 'index'])->name('admin.prijzen');
+Route::post('/admin/prijzen', [PrijzenController::class, 'bulkUpdate'])->name('admin.prijzen.update');
