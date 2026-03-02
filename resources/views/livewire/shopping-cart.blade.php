@@ -1,4 +1,4 @@
-<div x-data="{ open: @entangle('isOpen') }">
+<div x-data="{ open: @entangle('isOpen').live }">
     <!-- Cart Toggle Button -->
     <button wire:click="toggleCart"
             class="relative bg-orange-500 hover:bg-orange-400 text-white p-2 rounded-full transition-colors">
@@ -81,6 +81,6 @@
     <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-         @click="$wire.set('isOpen', false)"
+         @click="$wire.toggleCart()"
          class="fixed inset-0 bg-black/50 z-40"></div>
 </div>
