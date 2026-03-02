@@ -5,14 +5,17 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\MenuItem;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class MenuSeeder extends Seeder
 {
     public function run(): void
     {
-        Category::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         MenuItem::truncate();
+        Category::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         $categories = [
             ['name' => 'Salades',           'slug' => 'salades',           'icon' => '🥗', 'sort_order' => 1],
