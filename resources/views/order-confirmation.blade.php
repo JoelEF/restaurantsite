@@ -38,7 +38,7 @@
                     Verwachte bezorgtijd: <strong>30-45 minuten</strong>
                     @else
                     🏃 Uw bestelling ligt klaar om af te halen bij:<br>
-                    <strong>Grote Markt 42, Amsterdam</strong><br>
+                    <strong>Dorpsstraat 6/6b, 6731 AT Otterlo</strong><br>
                     Verwachte bereidingstijd: <strong>15-20 minuten</strong>
                     @endif
                 </div>
