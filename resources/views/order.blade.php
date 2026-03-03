@@ -5,6 +5,15 @@
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="font-display text-5xl font-bold mb-4">Online Bestellen</h1>
             <p class="text-gray-300 text-lg">Bestel eenvoudig online — bezorging of afhalen, u kiest zelf!</p>
+            @if(!$isOpen)
+                <div class="mt-6 inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-xl font-semibold text-lg">
+                    <span>&#128274;</span> Momenteel gesloten &mdash; openingstijden vandaag: {{ $todayHours }}
+                </div>
+            @else
+                <div class="mt-6 inline-flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-xl font-semibold">
+                    <span>&#9989;</span> Open &mdash; vandaag: {{ $todayHours }}
+                </div>
+            @endif
         </div>
     </div>
 
@@ -40,9 +49,22 @@
                         </div>
                     </div>
 
+                    @if(!$isOpen)
+                    <!-- Gesloten melding -->
+                    <div class="bg-red-50 border-2 border-red-200 rounded-2xl p-8 text-center">
+                        <div class="text-5xl mb-4">&#128274;</div>
+                        <h3 class="text-xl font-bold text-red-700 mb-2">Restaurant momenteel gesloten</h3>
+                        <p class="text-red-600">Bestellingen kunnen alleen worden geplaatst tijdens openingstijden.</p>
+                        <p class="text-gray-600 mt-2 text-sm">Vandaag: <strong>{{ $todayHours }}</strong></p>
+                    </div>
+                    @else
+
                     <!-- Order Form -->
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <h2 class="font-semibold text-lg mb-4">Uw Gegevens</h2>
+                        @error('open')
+                            <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4 text-red-700 text-sm">{{ $message }}</div>
+                        @enderror
                         <form action="{{ route('order.store') }}" method="POST" id="orderForm">
                             @csrf
                             <input type="hidden" name="type" :value="orderType">
@@ -108,6 +130,8 @@
                             </template>
                         </form>
                     </div>
+
+                    @endif {{-- einde @if($isOpen) --}}
                 </div>
 
                 <!-- Right: Cart summary -->
