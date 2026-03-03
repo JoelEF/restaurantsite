@@ -10,13 +10,14 @@ class Order extends Model
     protected $fillable = [
         'order_number', 'customer_name', 'customer_email', 'customer_phone',
         'type', 'delivery_address', 'subtotal', 'delivery_fee', 'total',
-        'status', 'payment_status', 'notes',
+        'status', 'payment_status', 'notes', 'printed_at',
     ];
 
     protected $casts = [
-        'subtotal' => 'decimal:2',
-        'delivery_fee' => 'decimal:2',
-        'total' => 'decimal:2',
+        'subtotal'    => 'decimal:2',
+        'delivery_fee'=> 'decimal:2',
+        'total'       => 'decimal:2',
+        'printed_at'  => 'datetime',
     ];
 
     public function items(): HasMany

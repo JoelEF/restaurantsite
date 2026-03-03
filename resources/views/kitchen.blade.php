@@ -64,6 +64,27 @@
             .notes { color: #78350f; }
             .item span { color: #000; }
             .current-status { display: none; }
+        .printed-badge { display: none; }
+        }
+
+        /* Scherm stijlen voor print badge */
+        .printed-badge {
+            display: inline-block;
+            background: #065f46;
+            color: #6ee7b7;
+            font-size: 0.65rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .not-printed-badge {
+            display: inline-block;
+            background: #7f1d1d;
+            color: #fca5a5;
+            font-size: 0.65rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -77,41 +98,26 @@
 <div class="orders-grid" id="orders-container"></div>
 
 <script>
-    const POLL_INTERVAL = 20000;
-    const STORAGE_KEY   = 'printed_order_ids';
+    const POLL_INTERVAL = 15000; // 15 seconden
     const CSRF_TOKEN    = document.querySelector('meta[name="csrf-token"]').content;
 
     const statusLabels = {
-        pending:   '⏳ Wacht op bevestiging',
-        confirmed: '✅ Bevestigd',
-        preparing: '👨‍🍳 In bereiding',
-        ready:     '🎉 Klaar',
-        delivered: '🏠 Bezorgd/Opgehaald',
-        cancelled: '❌ Geannuleerd',
+        pending:   'Wacht op bevestiging',
+        confirmed: 'Bevestigd',
+        preparing: 'In bereiding',
+        ready:     'Klaar',
+        delivered: 'Bezorgd/Opgehaald',
+        cancelled: 'Geannuleerd',
     };
-
-    function getPrinted() {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    }
-
-    function markPrinted(ids) {
-        const existing = getPrinted();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([...new Set([...existing, ...ids])]));
-    }
 
     async function updateStatus(orderId, newStatus) {
         try {
             const res = await fetch(`/keuken/status/${orderId}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': CSRF_TOKEN,
-                },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
                 body: JSON.stringify({ status: newStatus }),
             });
-            if (res.ok) {
-                poll(); // Direct verversen
-            }
+            if (res.ok) poll();
         } catch (e) {
             alert('Fout bij statuswijziging. Probeer opnieuw.');
         }
@@ -121,42 +127,46 @@
         const container = document.getElementById('orders-container');
         container.innerHTML = '';
 
-        // Sorteer: actieve bestellingen bovenaan, afgeleverd onderaan
         const sorted = [...orders].sort((a, b) => {
-            const order = ['pending','confirmed','preparing','ready','delivered','cancelled'];
-            return order.indexOf(a.status) - order.indexOf(b.status);
+            const ord = ['pending','confirmed','preparing','ready','delivered','cancelled'];
+            return ord.indexOf(a.status) - ord.indexOf(b.status);
         });
 
         sorted.forEach(order => {
             const div = document.createElement('div');
             div.className = `order status-${order.status}`;
 
+            const printBadge = order.printed_at
+                ? `<span class="printed-badge">GEPRINT ${order.printed_at}</span>`
+                : `<span class="not-printed-badge">NIET GEPRINT</span>`;
+
             const statusBtns = [];
-            if (order.status === 'pending')   statusBtns.push(`<button class="btn-status btn-confirm"   onclick="updateStatus(${order.id},'confirmed')">✅ Bevestig</button>`);
-            if (order.status === 'confirmed') statusBtns.push(`<button class="btn-status btn-preparing" onclick="updateStatus(${order.id},'preparing')">👨‍🍳 Start bereiding</button>`);
-            if (order.status === 'preparing') statusBtns.push(`<button class="btn-status btn-ready"     onclick="updateStatus(${order.id},'ready')">🎉 Klaar</button>`);
-            if (order.status === 'ready')     statusBtns.push(`<button class="btn-status btn-delivered" onclick="updateStatus(${order.id},'delivered')">🏠 Bezorgd/Opgehaald</button>`);
+            if (order.status === 'pending')   statusBtns.push(`<button class="btn-status btn-confirm"   onclick="updateStatus(${order.id},'confirmed')">&#10003; Bevestig</button>`);
+            if (order.status === 'confirmed') statusBtns.push(`<button class="btn-status btn-preparing" onclick="updateStatus(${order.id},'preparing')">Start bereiding</button>`);
+            if (order.status === 'preparing') statusBtns.push(`<button class="btn-status btn-ready"     onclick="updateStatus(${order.id},'ready')">Klaar</button>`);
+            if (order.status === 'ready')     statusBtns.push(`<button class="btn-status btn-delivered" onclick="updateStatus(${order.id},'delivered')">Bezorgd/Opgehaald</button>`);
             if (!['delivered','cancelled'].includes(order.status)) {
-                statusBtns.push(`<button class="btn-status btn-cancel" onclick="updateStatus(${order.id},'cancelled')">❌ Annuleer</button>`);
+                statusBtns.push(`<button class="btn-status btn-cancel" onclick="updateStatus(${order.id},'cancelled')">Annuleer</button>`);
             }
 
             div.innerHTML = `
                 <div class="order-header">
                     <strong>#${order.order_number}</strong>
                     <span class="badge ${order.type === 'delivery' ? 'bezorging' : 'afhalen'}">
-                        ${order.type === 'delivery' ? '🚚 BEZORGING' : '🏃 AFHALEN'}
+                        ${order.type === 'delivery' ? 'BEZORGING' : 'AFHALEN'}
                     </span>
-                    <span class="current-status ${order.status}">${statusLabels[order.status] || order.status}</span>
-                    <small style="color:#aaa;margin-left:auto">${order.created_at}</small>
+                    ${printBadge}
+                    <span class="current-status ${order.status}" style="margin-left:auto">${statusLabels[order.status] || order.status}</span>
+                    <small style="color:#aaa">${order.created_at}</small>
                 </div>
                 <div class="order-meta">
-                    <strong>${order.customer_name}</strong> &nbsp;📞 ${order.customer_phone}
-                    ${order.type === 'delivery' ? '<br>📍 ' + (order.delivery_address || '') : ''}
+                    <strong>${order.customer_name}</strong> &nbsp; ${order.customer_phone}
+                    ${order.type === 'delivery' ? '<br>' + (order.delivery_address || '') : ''}
                 </div>
                 <div class="order-items">
                     ${order.items.map(i => `<div class="item"><span>${i.quantity}x</span> ${i.name}</div>`).join('')}
                 </div>
-                ${order.notes ? `<div class="notes">⚠️ ${order.notes}</div>` : ''}
+                ${order.notes ? `<div class="notes">! ${order.notes}</div>` : ''}
                 <div class="status-buttons">${statusBtns.join('')}</div>
             `;
             container.appendChild(div);
@@ -168,30 +178,20 @@
             const res = await fetch('{{ route("kitchen.orders") }}');
             const orders = await res.json();
 
-            const printed = getPrinted();
-            const newOrders = orders.filter(o => !printed.includes(o.id));
-
-            // Altijd alle bestellingen tonen
             renderOrders(orders);
 
-            if (newOrders.length > 0) {
-                markPrinted(newOrders.map(o => o.id));
-
-                // Print alleen de nieuwe bestellingen
-                const container = document.getElementById('orders-container');
-                const all = container.innerHTML;
-                renderOrders(newOrders);
-                window.print();
-                renderOrders(orders);
-            }
-
             const now = new Date().toLocaleTimeString('nl-NL');
-            const active = orders.filter(o => !['delivered','cancelled'].includes(o.status)).length;
+            const active  = orders.filter(o => !['delivered','cancelled'].includes(o.status)).length;
+            const unprinted = orders.filter(o => !o.printed_at && o.status !== 'cancelled').length;
+            const printStatus = unprinted > 0
+                ? ` · ${unprinted} wacht op print (service draait op achtergrond)`
+                : ' · Alles geprint';
+
             document.getElementById('status').textContent =
-                `Laatste check: ${now} · ${active} actieve bestelling(en) · vernieuwd elke 20s`;
+                `Laatste check: ${now} · ${active} actieve bestelling(en)${printStatus}`;
 
         } catch (e) {
-            document.getElementById('status').textContent = '⚠️ Verbindingsfout — opnieuw proberen...';
+            document.getElementById('status').textContent = 'Verbindingsfout — opnieuw proberen...';
         }
     }
 

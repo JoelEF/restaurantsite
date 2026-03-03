@@ -104,6 +104,7 @@ class OrderController extends Controller
                 'customer_phone' => $order->customer_phone,
                 'delivery_address' => $order->delivery_address,
                 'notes'        => $order->notes,
+                'printed_at'   => $order->printed_at?->format('H:i'),
                 'items'        => $order->items->map(fn($i) => [
                     'name'     => $i->name,
                     'quantity' => $i->quantity,

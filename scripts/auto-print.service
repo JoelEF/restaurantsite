@@ -1,0 +1,21 @@
+[Unit]
+Description=Restaurant Auto-Print Service
+After=network.target mysql.service
+Wants=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/restaurantsite
+ExecStart=/usr/bin/php /var/www/restaurantsite/artisan orders:auto-print --interval=15
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=restaurant-autoprint
+
+# Optioneel: geef de printer naam op via omgevingsvariabele
+# Environment="PRINTER_NAME=MijnThermischePrinter"
+
+[Install]
+WantedBy=multi-user.target
