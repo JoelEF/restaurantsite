@@ -133,6 +133,12 @@ class OrderController extends Controller
         return view('kitchen-bon', ['order' => $data]);
     }
 
+    public function markPrinted(Order $order)
+    {
+        $order->update(['printed_at' => now()]);
+        return response()->json(['ok' => true]);
+    }
+
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([

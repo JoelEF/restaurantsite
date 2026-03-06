@@ -30,12 +30,8 @@
         .afhalen   { background: #15803d; }
         .notes { margin-top: 8px; border-top: 1px dashed #555; padding-top: 8px; font-size: 0.85rem; color: #fbbf24; }
 
-        /* Status knoppen */
         .status-buttons { margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-status {
-            padding: 6px 12px; border: none; border-radius: 6px; font-size: 0.8rem;
-            font-weight: bold; cursor: pointer; transition: opacity 0.15s;
-        }
+        .btn-status { padding: 6px 12px; border: none; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: opacity 0.15s; }
         .btn-status:hover { opacity: 0.8; }
         .btn-confirm   { background: #f59e0b; color: #000; }
         .btn-preparing { background: #1d4ed8; color: #fff; }
@@ -51,40 +47,47 @@
         .current-status.delivered { color: #6b7280; }
         .current-status.cancelled { color: #f87171; }
 
-        @media print {
-            body { background: #fff; color: #000; padding: 0; }
-            #screen-ui { display: none; }
-            .status-buttons { display: none; }
-            .orders-grid { display: block; }
-            .order { border: 2px dashed #000; color: #000; background: #fff; page-break-after: always;
-                     break-after: page; margin-bottom: 0; opacity: 1 !important; }
-            .order-meta { color: #333; }
-            .badge.bezorging { background: #93c5fd; color: #000; }
-            .badge.afhalen   { background: #86efac; color: #000; }
-            .notes { color: #78350f; }
-            .item span { color: #000; }
-            .current-status { display: none; }
-        .printed-badge { display: none; }
-        }
+        .printed-badge     { display:inline-block; background:#065f46; color:#6ee7b7; font-size:0.65rem; padding:1px 6px; border-radius:4px; font-weight:bold; }
+        .not-printed-badge { display:inline-block; background:#7f1d1d; color:#fca5a5; font-size:0.65rem; padding:1px 6px; border-radius:4px; font-weight:bold; }
 
-        /* Scherm stijlen voor print badge */
-        .printed-badge {
-            display: inline-block;
-            background: #065f46;
-            color: #6ee7b7;
-            font-size: 0.65rem;
-            padding: 1px 6px;
-            border-radius: 4px;
+        /* Print wachtrij indicator */
+        #print-queue-bar {
+            display: none;
+            background: #1d4ed8;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
             font-weight: bold;
         }
-        .not-printed-badge {
-            display: inline-block;
-            background: #7f1d1d;
-            color: #fca5a5;
-            font-size: 0.65rem;
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-weight: bold;
+        #print-queue-bar.active { display: block; }
+
+        /* ===== PRINT STIJLEN ===== */
+        /* Scherm: verberg het print-area div */
+        #print-area { display: none; }
+
+        @media print {
+            /* Verberg alles behalve print-area */
+            #screen-ui, .orders-grid, #print-queue-bar { display: none !important; }
+            body { background: #fff; color: #000; padding: 0; margin: 0; }
+
+            /* Toon print-area */
+            #print-area {
+                display: block !important;
+                font-family: monospace;
+                font-size: 12pt;
+                width: 80mm; /* Thermisch papier breedte */
+                margin: 0;
+                padding: 4mm;
+            }
+            .bon-title   { font-size: 14pt; font-weight: bold; text-align: center; }
+            .bon-center  { text-align: center; }
+            .bon-line    { border-top: 1px dashed #000; margin: 4px 0; }
+            .bon-type    { font-size: 13pt; font-weight: bold; text-align: center; padding: 2px 0; }
+            .bon-item    { font-size: 12pt; }
+            .bon-qty     { font-weight: bold; }
+            .bon-notes   { font-weight: bold; border: 1px solid #000; padding: 3px; margin-top: 4px; }
         }
     </style>
 </head>
@@ -92,17 +95,101 @@
 
 <div id="screen-ui">
     <h1>Keuken Display</h1>
+    <div id="print-queue-bar"></div>
     <div id="status">Laden...</div>
 </div>
+
+{{-- Verborgen print-gebied: hier komt één bon tegelijk --}}
+<div id="print-area"></div>
 
 <div class="orders-grid" id="orders-container"></div>
 
 <script>
-    const POLL_INTERVAL = 15000; // 15 seconden
+    const POLL_INTERVAL = 15000;
     const CSRF_TOKEN    = document.querySelector('meta[name="csrf-token"]').content;
 
+    // ===== PRINT WACHTRIJ =====
+    const printQueue = [];
+    let isPrinting   = false;
+
+    function enqueuePrint(order) {
+        printQueue.push(order);
+        updateQueueBar();
+        if (!isPrinting) processPrintQueue();
+    }
+
+    async function processPrintQueue() {
+        if (printQueue.length === 0) {
+            isPrinting = false;
+            updateQueueBar();
+            return;
+        }
+
+        isPrinting = true;
+        const order = printQueue.shift();
+        updateQueueBar();
+
+        // Vul het print-gebied met deze bon
+        document.getElementById('print-area').innerHTML = buildBonHtml(order);
+
+        // Print (zonder dialoog bij Chrome met --kiosk-printing)
+        window.print();
+
+        // Markeer als geprint in de database
+        try {
+            await fetch(`/keuken/geprint/${order.id}`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN },
+            });
+        } catch (e) { /* niet fataal */ }
+
+        // Korte pauze zodat de printer de bon kan verwerken
+        await new Promise(r => setTimeout(r, 800));
+
+        processPrintQueue();
+    }
+
+    function updateQueueBar() {
+        const bar = document.getElementById('print-queue-bar');
+        const total = printQueue.length + (isPrinting ? 1 : 0);
+        if (total > 0) {
+            bar.textContent = `Printing... ${total} bon(nen) in wachtrij`;
+            bar.classList.add('active');
+        } else {
+            bar.classList.remove('active');
+        }
+    }
+
+    function buildBonHtml(order) {
+        const type = order.type === 'delivery' ? 'BEZORGING' : 'AFHALEN';
+        const items = order.items.map(i =>
+            `<div class="bon-item"><span class="bon-qty">${i.quantity}x</span> ${i.name}</div>`
+        ).join('');
+        const adres = order.type === 'delivery' && order.delivery_address
+            ? `<div>${order.delivery_address}</div>` : '';
+        const notes = order.notes
+            ? `<div class="bon-notes">! LET OP: ${order.notes}</div>` : '';
+
+        return `
+            <div class="bon-title">{{ config('app.name', 'Restaurant') }}</div>
+            <div class="bon-center">BON #${order.order_number}</div>
+            <div class="bon-center">${order.created_at}</div>
+            <div class="bon-line"></div>
+            <div class="bon-type">&mdash; ${type} &mdash;</div>
+            <div class="bon-line"></div>
+            <div><strong>${order.customer_name}</strong></div>
+            <div>Tel: ${order.customer_phone}</div>
+            ${adres}
+            <div class="bon-line"></div>
+            ${items}
+            ${notes}
+            <div class="bon-line"></div>
+        `;
+    }
+
+    // ===== STATUS KNOPPEN =====
     const statusLabels = {
-        pending:   'Wacht op bevestiging',
+        pending:   'Wacht',
         confirmed: 'Bevestigd',
         preparing: 'In bereiding',
         ready:     'Klaar',
@@ -112,17 +199,18 @@
 
     async function updateStatus(orderId, newStatus) {
         try {
-            const res = await fetch(`/keuken/status/${orderId}`, {
+            await fetch(`/keuken/status/${orderId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
                 body: JSON.stringify({ status: newStatus }),
             });
-            if (res.ok) poll();
+            poll();
         } catch (e) {
-            alert('Fout bij statuswijziging. Probeer opnieuw.');
+            alert('Fout bij statuswijziging.');
         }
     }
 
+    // ===== RENDEREN =====
     function renderOrders(orders) {
         const container = document.getElementById('orders-container');
         container.innerHTML = '';
@@ -138,10 +226,10 @@
 
             const printBadge = order.printed_at
                 ? `<span class="printed-badge">GEPRINT ${order.printed_at}</span>`
-                : `<span class="not-printed-badge">NIET GEPRINT</span>`;
+                : `<span class="not-printed-badge">IN WACHTRIJ</span>`;
 
             const statusBtns = [];
-            if (order.status === 'pending')   statusBtns.push(`<button class="btn-status btn-confirm"   onclick="updateStatus(${order.id},'confirmed')">&#10003; Bevestig</button>`);
+            if (order.status === 'pending')   statusBtns.push(`<button class="btn-status btn-confirm"   onclick="updateStatus(${order.id},'confirmed')">Bevestig</button>`);
             if (order.status === 'confirmed') statusBtns.push(`<button class="btn-status btn-preparing" onclick="updateStatus(${order.id},'preparing')">Start bereiding</button>`);
             if (order.status === 'preparing') statusBtns.push(`<button class="btn-status btn-ready"     onclick="updateStatus(${order.id},'ready')">Klaar</button>`);
             if (order.status === 'ready')     statusBtns.push(`<button class="btn-status btn-delivered" onclick="updateStatus(${order.id},'delivered')">Bezorgd/Opgehaald</button>`);
@@ -173,22 +261,32 @@
         });
     }
 
+    // ===== POLLING =====
+    // Houd bij welke IDs al in de wachtrij staan (in deze browsersessie)
+    const queuedIds = new Set();
+
     async function poll() {
         try {
-            const res = await fetch('{{ route("kitchen.orders") }}');
+            const res    = await fetch('{{ route("kitchen.orders") }}');
             const orders = await res.json();
+
+            // Voeg nieuwe (ongeprinte) bestellingen toe aan de wachtrij
+            orders
+                .filter(o => !o.printed_at && o.status !== 'cancelled' && !queuedIds.has(o.id))
+                .forEach(o => {
+                    queuedIds.add(o.id);
+                    enqueuePrint(o);
+                });
 
             renderOrders(orders);
 
-            const now = new Date().toLocaleTimeString('nl-NL');
-            const active  = orders.filter(o => !['delivered','cancelled'].includes(o.status)).length;
-            const unprinted = orders.filter(o => !o.printed_at && o.status !== 'cancelled').length;
-            const printStatus = unprinted > 0
-                ? ` · ${unprinted} wacht op print (service draait op achtergrond)`
-                : ' · Alles geprint';
+            const now      = new Date().toLocaleTimeString('nl-NL');
+            const active   = orders.filter(o => !['delivered','cancelled'].includes(o.status)).length;
+            const inQueue  = printQueue.length + (isPrinting ? 1 : 0);
+            const queueTxt = inQueue > 0 ? ` · ${inQueue} in print-wachtrij` : ' · Alles geprint';
 
             document.getElementById('status').textContent =
-                `Laatste check: ${now} · ${active} actieve bestelling(en)${printStatus}`;
+                `Laatste check: ${now} · ${active} actieve bestelling(en)${queueTxt}`;
 
         } catch (e) {
             document.getElementById('status').textContent = 'Verbindingsfout — opnieuw proberen...';

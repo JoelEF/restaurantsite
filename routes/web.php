@@ -26,4 +26,5 @@ Route::post('/contact', [ContactController::class, 'send'])->name('contact.send'
 Route::get('/keuken', [OrderController::class, 'kitchen'])->name('kitchen');
 Route::get('/keuken/bestellingen', [OrderController::class, 'kitchenOrders'])->name('kitchen.orders');
 Route::post('/keuken/status/{order}', [OrderController::class, 'updateStatus'])->name('kitchen.updateStatus');
+Route::post('/keuken/geprint/{order}', [OrderController::class, 'markPrinted'])->name('kitchen.markPrinted');
 Route::get('/keuken/bon/{order}', [OrderController::class, 'printBon'])->name('kitchen.bon');
